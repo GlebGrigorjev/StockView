@@ -4,17 +4,30 @@ import CardList from './Components/CardList/CardList';
 import SearchBar from './Components/SearchBar/SearchBar';
 import { CompanySearch } from './company';
 import { searchCompanies } from './api';
+import Navbar from './Components/NavBar/NavBar';
+import Hero from './Components/Hero/Hero';
+import ListPortfolio from './Components/Portfolio/ListPortfolio/ListPortfolio';
 
 function App() {
   const [search, setSearch] = useState<string>('')
+  const [portfolioValues, setPortfolioValues] = useState<string[]>([]);
   const [searchResult, setSearchResult] = useState<CompanySearch[]>([]);
   const [serverError, setServerError] = useState<string>('');
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
       setSearch(e.target.value);
     };
+
+    const onPortfolioCreate = (e: any) => {
+      e.preventDefault();
+      const exists = portfolioValues.find((value) => value === e.target[0].value);
+      if (exists) return;
+      const updatedPortfolio = [...portfolioValues, e.target[0].value];
+      setPortfolioValues(updatedPortfolio);
+    }
   
-    const onClick = async (e: SyntheticEvent) => {
+    const onSearchSubmit = async (e: SyntheticEvent) => {
+      e.preventDefault();
       const result = await searchCompanies(search);
       
       if(typeof result === 'string') {
@@ -23,11 +36,23 @@ function App() {
         setSearchResult(result.data);
       }
     }
+
+    const onPortfolioDelete = (e: any) => {
+      e.preventDefault();
+
+      const removed = portfolioValues.filter((value) => {
+        return value !== e.target[0].value;
+      });
+
+      setPortfolioValues(removed);
+    }
     
   return (
     <div className="App">
-      <SearchBar onClick={onClick} search={search} handleChange={handleChange} />
-      <CardList />
+      <Navbar />
+      <SearchBar onSearchSubmit={onSearchSubmit} search={search} handleSearchChange={handleSearchChange} />
+      <ListPortfolio portfolioValues={portfolioValues} onPortfolioDelete={onPortfolioDelete}/>
+      <CardList searchResults={searchResult} onPortfolioCreate={onPortfolioCreate}/>
     </div>
   );
 }
