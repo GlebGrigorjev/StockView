@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using api.DTOs.Comment;
 
-namespace api.Models
+namespace api.DTOs.Stock
 {
-    public class Stock
+    public class StockDto
     {
         public int Id { get; set; }
 
@@ -14,12 +14,10 @@ namespace api.Models
 
         public long MarketCap { get; set; }
 
-        [Column(TypeName = "numeric(18,2)")]
         public decimal Purchase { get; set; }
 
-        [Column(TypeName = "numeric(18,2)")]
         public decimal LastDividend { get; set; }
 
-        public List<Comment> Comments { get; set; } = [];
+        public List<CommentDto> Comments { get; set; }
     }
 }
