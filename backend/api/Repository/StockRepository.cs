@@ -1,12 +1,12 @@
 ﻿using api.Data;
 using api.DTOs.Stock;
+using api.Helpers;
 using api.Models;
 using Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Repository
 {
-
     public class StockRepository : IStockRepository
     {
         private readonly Context _context;
@@ -16,7 +16,24 @@ namespace Api.Repository
             _context = context;
         }
 
-        public async Task<List<Stock>> GetAllStocksAsync() => await _context.Stocks.Include(x => x.Comments).ToListAsync();
+        public async Task<List<Stock>> GetAllStocksAsync(QueryObject query)
+        {
+            var stocks = _context.Stocks.Include(x => x.Comments).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.CompanyName))
+                stocks = stocks.Where(x => x.CompanyName.Contains(query.CompanyName));
+
+            if (!string.IsNullOrWhiteSpace(query.Symbol))
+                stocks = stocks.Where(x => x.Symbol.Contains(query.Symbol));
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+                if (query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
+                    stocks = query.IsDesc ? stocks.OrderByDescending(x => x.Symbol) : stocks.OrderBy(x => x.Symbol);
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await stocks.Skip(skipNumber).Take(query.PageSize).ToListAsync();
+        }
 
         public async Task<Stock?> GetStockByIdAsync(int id) => await _context.Stocks.Include(x => x.Comments).FirstOrDefaultAsync(x => x.Id == id);
 
