@@ -11,7 +11,8 @@ namespace api.Mappers
             Title = comment.Title,
             Content = comment.Content,
             DateCreated = comment.DateCreated,
-            StockId = comment.StockId
+            StockId = comment.StockId,
+            CreatedBy = comment.AppUser?.UserName
         };
 
         public static Comment ToCommentFromCreateComment(this CreateCommentDto commentDto, int stockId) => new()

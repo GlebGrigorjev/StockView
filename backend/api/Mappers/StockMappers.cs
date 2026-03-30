@@ -26,5 +26,15 @@ namespace api.Mappers
             Purchase = stockDto.Purchase,
             LastDividend = stockDto.LastDividend
         };
+
+        public static Stock ToStockFromFMP(this FMPStock fmpStock) => new()
+        {
+            Symbol = fmpStock.symbol,
+            CompanyName = fmpStock.companyName,
+            Industry = fmpStock.industry,
+            MarketCap = fmpStock.marketCap,
+            Purchase = (decimal)fmpStock.price,
+            LastDividend = (decimal)fmpStock.lastDividend
+        };
     }
 }

@@ -9,10 +9,15 @@ namespace api.Data
     {
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Portfolio> Portfolios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Portfolio>(x => x.HasKey(p => new { p.AppUserId, p.StockId }));
+            modelBuilder.Entity<Portfolio>().HasOne(p => p.AppUser).WithMany(u => u.Protfolios).HasForeignKey(p => p.AppUserId);
+            modelBuilder.Entity<Portfolio>().HasOne(p => p.Stock).WithMany(s => s.Protfolios).HasForeignKey(p => p.StockId);
 
             List<IdentityRole> roles =
             [

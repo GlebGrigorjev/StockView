@@ -11,5 +11,7 @@
         public DateTime DateCreated { get; set; } = DateTime.Now;
 
         public int? StockId { get; set; }
+
+        public string CreatedBy { get; set; } = string.Empty;
     }
 }

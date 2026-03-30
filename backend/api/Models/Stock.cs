@@ -2,6 +2,7 @@
 
 namespace api.Models
 {
+    [Table("Stocks")]
     public class Stock
     {
         public int Id { get; set; }
@@ -21,5 +22,7 @@ namespace api.Models
         public decimal LastDividend { get; set; }
 
         public List<Comment> Comments { get; set; } = [];
+
+        public List<Portfolio> Protfolios { get; set; } = [];
     }
 }
